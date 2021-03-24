@@ -1,12 +1,12 @@
 const _allowAdmin = (req, res, next) => {
-  if (req?.user?.role || req.user.role !== "admin")
+  if (!req?.user?.role || req.user.role !== "admin")
     return res.status(400).json({ msg: "Bad User" });
 
   next();
 };
 
 const _allowAdminManager = (req, res, next) => {
-  if (req?.user?.role) return res.status(400).json({ msg: "Bad User" });
+  if (!req?.user?.role) return res.status(400).json({ msg: "Bad User" });
 
   if (req.user.role === "admin" || req.user.role === "manager") {
     next();
@@ -17,14 +17,14 @@ const _allowAdminManager = (req, res, next) => {
 };
 
 const _allowFaculty = (req, res, next) => {
-  if (req?.user?.role || req.user.role !== "faculty")
+  if (!req?.user?.role || req.user.role !== "faculty")
     return res.status(400).json({ msg: "Bad User" });
 
   next();
 };
 
 const _allowStudent = (req, res, next) => {
-  if (req?.user?.role || req.user.role !== "student")
+  if (!req?.user?.role || req.user.role !== "student")
     return res.status(400).json({ msg: "Bad User" });
 
   next();
