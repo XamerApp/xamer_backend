@@ -5,6 +5,9 @@ const {
   valid_data,
   number_prop,
 } = require("./validateData");
+
+const _loginProps = [string_prop("username"), string_prop("password")];
+
 const _addProps = [
   string_prop("test_id"),
   string_prop("title"),
@@ -112,6 +115,7 @@ module.exports = {
   _addBatchProps,
   _addSubjectProps,
   _addTestProps,
+  _loginProps,
   _removeTestProps,
   _addQuestionProps,
   _middleware_addManager,

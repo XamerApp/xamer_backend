@@ -15,6 +15,8 @@ router.delete("/", check_for_access_token, async (req, res) => {
   // Calculating how much time requested token have
   const timeLeft = req.user.exp - Math.floor(new Date().getTime() / 1000);
 
+  // console.log(`${timeLeft / 86400} days left of this token validity.`);
+
   // Blacklisting the token
   await redisops.add_key(req.headers.authorization.split(" ")[1], timeLeft);
 

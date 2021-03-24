@@ -1,6 +1,17 @@
 const JWT = require("jsonwebtoken");
 const redisOps = require("../utils/redis_ops");
 
+const { _loginProps } = require("../utils/validationProps");
+const { valid_data } = require("../utils/validateData");
+
+const check_for_credentials = (req, res, next) => {
+  if (valid_data(req.body, _loginProps)) {
+    next();
+  } else {
+    res.status(400).json({ msg: "Invalid Data" });
+  }
+};
+
 // Not using right now
 const check_for_refresh_token = (req, res, next) => {
   if (!req.body.refresh_token)
@@ -51,4 +62,5 @@ const check_for_access_token = async (req, res, next) => {
 module.exports = {
   check_for_refresh_token,
   check_for_access_token,
+  check_for_credentials,
 };

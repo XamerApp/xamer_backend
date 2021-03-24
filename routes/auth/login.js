@@ -9,6 +9,9 @@ const ManagerModel = require("../../models/user_models/manager");
 const FacultyModel = require("../../models/user_models/faculty");
 const StudentModel = require("../../models/user_models/student");
 
+// Middleware
+const { check_for_credentials } = require("../../middlewares/auth");
+
 // Helper Functions
 const getUser = async (username) => {
   let ret;
@@ -20,19 +23,19 @@ const getUser = async (username) => {
 };
 
 /////////////////////////////////////////////////////
-// METHOD :: GET
-// DESCRIPTION :: Login users
+// METHOD :: POST
+// DESCRIPTION :: Login user
 // ACCESS :: Public
-// EXPECTED PAYLOAD TYPE :: query/string
+// EXPECTED PAYLOAD TYPE :: body/json
 /////////////////////////////////////////////////////
-router.get("/", async (req, res) => {
-  const username = req.query.username.toLowerCase().trim();
+router.post("/", check_for_credentials, async (req, res) => {
+  const username = req.body.username.toLowerCase().trim();
   const User = await getUser(username);
 
   if (!User) {
     res.status(400).json({ msg: "Username not found" });
   } else {
-    const ret = await crypto.compare(req.query.password.trim(), User.password);
+    const ret = await crypto.compare(req.body.password.trim(), User.password);
 
     if (ret) {
       const userInfo = {
