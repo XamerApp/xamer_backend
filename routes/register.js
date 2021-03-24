@@ -8,6 +8,11 @@ const {
   _middleware_addFaculty,
 } = require("../utils/validationProps");
 const { is_username_exists } = require("../middlewares/validation");
+const {
+  _allowAdmin,
+  _allowAdminManager,
+} = require("../middlewares/privilages");
+const { check_for_access_token } = require("../middlewares/auth");
 
 // Models
 const AdminModel = require("../models/user_models/admin");
@@ -26,6 +31,8 @@ const SubjectModel = require("../models/education_models/subject");
 /////////////////////////////////////////////////////
 router.post(
   "/manager",
+  check_for_access_token,
+  _allowAdmin,
   _middleware_addManager,
   is_username_exists,
   async (req, res) => {
@@ -57,6 +64,8 @@ router.post(
 /////////////////////////////////////////////////////
 router.post(
   "/student",
+  check_for_access_token,
+  _allowAdminManager,
   _middleware_addStudent,
   is_username_exists,
   async (req, res) => {
@@ -103,6 +112,8 @@ router.post(
 /////////////////////////////////////////////////////
 router.post(
   "/faculty",
+  check_for_access_token,
+  _allowAdminManager,
   _middleware_addFaculty,
   is_username_exists,
   async (req, res) => {
