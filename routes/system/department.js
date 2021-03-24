@@ -4,7 +4,7 @@ const router = require("express").Router();
 // Validation Middleware
 const { _check_for_add_department } = require("../../middlewares/validation");
 const { _allowAdminManager } = require("../../middlewares/privilages");
-const { check_for_access_token } = require("../middlewares/auth");
+const { check_for_access_token } = require("../../middlewares/auth");
 
 // Database Models
 const DepartmentModel = require("../../models/education_models/department");

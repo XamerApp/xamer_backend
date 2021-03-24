@@ -4,7 +4,7 @@ const router = require("express").Router();
 // Validation Middleware
 const { _check_for_add_batch } = require("../../middlewares/validation");
 const { _allowAdminManager } = require("../../middlewares/privilages");
-const { check_for_access_token } = require("../middlewares/auth");
+const { check_for_access_token } = require("../../middlewares/auth");
 
 // Database Models
 const BatchModel = require("../../models/education_models/batch");

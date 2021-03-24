@@ -7,7 +7,7 @@ const {
   _check_for_remove_test,
 } = require("../../middlewares/validation");
 const { _allowFaculty } = require("../../middlewares/privilages");
-const { check_for_access_token } = require("../middlewares/auth");
+const { check_for_access_token } = require("../../middlewares/auth");
 
 // Database Models
 const BatchModel = require("../../models/education_models/batch");
