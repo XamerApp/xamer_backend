@@ -18,6 +18,9 @@ const question = Schema({
 
   options: [option_schema],
   note: { type: SchemaTypes.String, default: "" },
+
+  group: { type: SchemaTypes.String, default: "Group 1" },
+  section: { type: SchemaTypes.String, default: "Set 1" },
 });
 
 module.exports = model(QUESTION_COLLECTION, question);

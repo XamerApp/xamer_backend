@@ -57,7 +57,7 @@ const _check_for_remove_test = (req, res, next) => {
 };
 
 const _check_for_add_question = (req, res, next) => {
-  if (valid_data(req.query, _addQuestionProps)) {
+  if (valid_data(req.body, _addQuestionProps)) {
     next();
   } else {
     res.status(400).json({ msg: "Invalid Data" });

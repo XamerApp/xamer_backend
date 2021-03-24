@@ -6,6 +6,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 
 // Routes
+const main_routes = require("./routes/main");
 const system_routes = require("./routes/system");
 const register_routes = require("./routes/register");
 
@@ -17,8 +18,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Using routes
-app.use("/", system_routes);
 app.use("/register", register_routes);
+app.use("/", system_routes);
+app.use("/", main_routes);
 
 // Connecting to the database
 mongoose
