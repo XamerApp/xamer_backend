@@ -14,7 +14,13 @@ const { valid_data } = require("../../utils/validateData");
 const { _checkOptionsProps } = require("../../utils/validationProps");
 
 // Exception classes
-const { NOTFOUND, EXISTS, INVALID, HandleError } = require("../../utils/error");
+const {
+  NOTFOUND,
+  EXISTS,
+  INVALID,
+  HandleError,
+  BAD,
+} = require("../../utils/error");
 
 // Database Models
 const BatchModel = require("../../models/education_models/batch");
@@ -90,7 +96,10 @@ router.post(
       const qBLK = req.body;
 
       // Checking if requested test available or not
-      const Test = await TestModel.findById(qBLK.test_id).populate("questions");
+      const Test = await TestModel.findById(qBLK.test_id).populate([
+        { path: "questions" },
+        { path: "in_charge", select: ["username"] },
+      ]);
       if (!Test) throw new NOTFOUND("Test");
 
       // Checking if question is exists into the test or not
@@ -100,6 +109,9 @@ router.post(
       if (Boolean(is_question_exists)) {
         throw new EXISTS("Question");
       }
+
+      // Checking if faculty is same as the in_charge of test
+      if (Test.in_charge.username !== req.user.username) throw new BAD("User");
 
       // Checking if question type is valid or not
       if (!is_type_valid(qBLK.mcq, qBLK.saq, qBLK.baq))

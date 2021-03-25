@@ -19,15 +19,23 @@ class INVALID extends Error {
   }
 }
 
+class BAD extends Error {
+  constructor(itemName) {
+    super(`Bad ${itemName}`);
+    this.status = 400;
+  }
+}
+
 const HandleError = (err, res) => {
   switch (true) {
     case err instanceof NOTFOUND ||
       err instanceof EXISTS ||
-      err instanceof INVALID:
+      err instanceof INVALID ||
+      err instanceof BAD:
       return res.status(err.status).json({ msg: err.message });
     default:
       return res.status(500).json({ msg: err?.message ?? err });
   }
 };
 
-module.exports = { NOTFOUND, EXISTS, INVALID, HandleError };
+module.exports = { NOTFOUND, EXISTS, INVALID, BAD, HandleError };
