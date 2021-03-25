@@ -18,9 +18,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Using routes
-app.use("/", auth_routes);
-
 // Connecting to the database
 mongoose
   .connect(process.env.DB_URI, {
@@ -33,6 +30,21 @@ mongoose
   .catch((err) => {
     console.log(err?.message ?? err);
   });
+
+// Requiring models
+require("./models/education_models/department");
+require("./models/education_models/batch");
+require("./models/education_models/subject");
+require("./models/main_models/answer");
+require("./models/main_models/question");
+require("./models/main_models/test");
+require("./models/user_models/admin");
+require("./models/user_models/faculty");
+require("./models/user_models/manager");
+require("./models/user_models/student");
+
+// Using routes
+app.use("/", auth_routes);
 
 // Testing API
 app.get("/", check_for_access_token, (req, res) => {

@@ -14,12 +14,25 @@ const { check_for_credentials } = require("../../middlewares/auth");
 
 // Helper Functions
 const getUser = async (username) => {
-  let ret;
-  ret = await AdminModel.findOne({ username });
-  if (!ret) ret = await ManagerModel.findOne({ username });
-  if (!ret) ret = await FacultyModel.findOne({ username });
-  if (!ret) ret = await StudentModel.findOne({ username });
-  return ret;
+  try {
+    let ret;
+    ret = await AdminModel.findOne({ username });
+    if (!ret) ret = await ManagerModel.findOne({ username });
+    if (!ret)
+      ret = await FacultyModel.findOne({ username }).populate([
+        { path: "departments" },
+        { path: "subjects" },
+      ]);
+    if (!ret)
+      ret = await StudentModel.findOne({ username }).populate([
+        { path: "department" },
+        { path: "batch" },
+      ]);
+    return ret;
+  } catch (err) {
+    console.error(err.message);
+    return null;
+  }
 };
 
 /////////////////////////////////////////////////////
@@ -42,6 +55,11 @@ router.post("/", check_for_credentials, async (req, res) => {
         name: User.name,
         username: User.username,
         role: User.role,
+        departments: User.role === "faculty" ? User.departments : null,
+        subjects: User.role === "faculty" ? User.subjects : null,
+
+        department: User.role === "student" ? User.department : null,
+        batch: User.role === "student" ? User.batch : null,
       };
       res.status(200).json({
         msg: "Successfully Logged In",
