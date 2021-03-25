@@ -30,9 +30,20 @@ const _allowStudent = (req, res, next) => {
   next();
 };
 
+const _allowFacultyStudent = (req, res, next) => {
+  if (
+    !req?.user?.role ||
+    (req.user.role !== "student" && req.user.role !== "faculty")
+  )
+    return res.status(400).json({ msg: "Bad User" });
+
+  next();
+};
+
 module.exports = {
   _allowAdmin,
   _allowAdminManager,
   _allowFaculty,
   _allowStudent,
+  _allowFacultyStudent,
 };

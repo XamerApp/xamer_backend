@@ -6,7 +6,10 @@ const {
   _check_for_add_test,
   _check_for_remove_test,
 } = require("../../middlewares/validation");
-const { _allowFaculty } = require("../../middlewares/privilages");
+const {
+  _allowFaculty,
+  _allowFacultyStudent,
+} = require("../../middlewares/privilages");
 const { check_for_access_token } = require("../../middlewares/auth");
 
 // Database Models
@@ -15,6 +18,8 @@ const DepartmentModel = require("../../models/education_models/department");
 const SubjectModel = require("../../models/education_models/subject");
 const TestModel = require("../../models/main_models/test");
 const FacultyModel = require("../../models/user_models/faculty");
+const StudentModel = require("../../models/user_models/student");
+const { HandleError, NOTFOUND } = require("../../utils/error");
 
 /////////////////////////////////////////////////////
 // METHOD :: POST
@@ -171,4 +176,60 @@ router.delete(
   }
 );
 
+/////////////////////////////////////////////////////
+// METHOD :: GET
+// DESCRIPTION :: GET tests from database
+// ACCESS :: Faculties & Students
+// EXPECTED PAYLOAD TYPE :: query/String
+/////////////////////////////////////////////////////
+router.get(
+  "/test",
+  check_for_access_token,
+  _allowFacultyStudent,
+  async (req, res) => {
+    try {
+      const user = req.user.role;
+      let searchConstrains;
+      let populateConstrains;
+
+      // Get UserInfo
+      let User;
+      if (user === "student") {
+        User = await StudentModel.findOne({ username: req.user.username });
+        searchConstrains = {
+          department: User.department._id,
+          batch: User.batch._id,
+        };
+        populateConstrains = [
+          { path: "in_charge", select: ["-password"] },
+          { path: "department" },
+          { path: "batch" },
+          { path: "subject" },
+        ];
+      } else {
+        User = await FacultyModel.findOne({ username: req.user.username });
+        searchConstrains = {
+          in_charge: User.id,
+        };
+        populateConstrains = [
+          { path: "in_charge", select: ["-password"] },
+          { path: "department" },
+          { path: "batch" },
+          { path: "subject" },
+          { path: "questions" },
+        ];
+      }
+      if (!User) throw new NOTFOUND(req.user.name);
+
+      const ret = await TestModel.find(searchConstrains).populate(
+        populateConstrains
+      );
+      return res
+        .status(200)
+        .json({ msg: "Tests are successfully fetched.", data: ret });
+    } catch (err) {
+      return HandleError(err, res);
+    }
+  }
+);
 module.exports = router;
