@@ -199,7 +199,7 @@ router.delete(
 
       return res
         .status(200)
-        .json({ msg: "Question successfully remove from test", data: ret });
+        .json({ msg: "Question successfully removed from test", data: ret });
     } catch (err) {
       return HandleError(err, res);
     }
