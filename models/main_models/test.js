@@ -2,6 +2,7 @@ const { Schema, SchemaTypes, model } = require("mongoose");
 const {
   TEST_COLLECTION,
   FACULTY_COLLECTION,
+  DEPARTMENT_COLLECTION,
   BATCH_COLLECTION,
   QUESTION_COLLECTION,
   SUBJECT_COLLECTION,
@@ -18,7 +19,7 @@ const test = Schema({
   in_charge: { type: SchemaTypes.ObjectId, ref: FACULTY_COLLECTION },
 
   // Test Indentification props
-  department: { type: SchemaTypes.ObjectId, ref: FACULTY_COLLECTION },
+  department: { type: SchemaTypes.ObjectId, ref: DEPARTMENT_COLLECTION },
   batch: { type: SchemaTypes.ObjectId, ref: BATCH_COLLECTION },
   subject: { type: SchemaTypes.ObjectId, ref: SUBJECT_COLLECTION },
   semester: SchemaTypes.Number,
