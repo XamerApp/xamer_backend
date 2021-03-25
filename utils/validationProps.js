@@ -82,6 +82,11 @@ const _addQuestionProps = [
   string_prop("test_id"),
 ];
 
+const _removeQuestionProps = [
+  string_prop("question_id"),
+  string_prop("test_id"),
+];
+
 const _checkOptionsProps = [string_prop("name"), boolean_prop("is_correct")];
 
 const _middleware_addManager = (req, res, next) => {
@@ -121,6 +126,7 @@ module.exports = {
   _loginProps,
   _removeTestProps,
   _addQuestionProps,
+  _removeQuestionProps,
   _checkOptionsProps,
   _middleware_addManager,
   _middleware_addStudent,

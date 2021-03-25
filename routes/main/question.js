@@ -5,6 +5,7 @@ const router = require("express").Router();
 const {
   _check_for_remove_test,
   _check_for_add_question,
+  _check_for_remove_question,
 } = require("../../middlewares/validation");
 const { _allowFaculty } = require("../../middlewares/privilages");
 const { check_for_access_token } = require("../../middlewares/auth");
@@ -161,4 +162,46 @@ router.post(
   }
 );
 
+/////////////////////////////////////////////////////
+// METHOD :: DELETE
+// DESCRIPTION :: Delete question
+// ACCESS :: Faculty
+// EXPECTED PAYLOAD TYPE :: body/json
+/////////////////////////////////////////////////////
+router.delete(
+  "/question",
+  check_for_access_token,
+  _allowFaculty,
+  _check_for_remove_question,
+  async (req, res) => {
+    try {
+      const qBLK = req.body;
+
+      // Checking if requested test available or not
+      const Test = await TestModel.findById(qBLK.test_id).populate([
+        { path: "in_charge", select: ["username"] },
+      ]);
+      if (!Test) throw new NOTFOUND("Test");
+
+      // Checking if faculty is same as the in_charge of test
+      if (Test.in_charge.username !== req.user.username) throw new BAD("User");
+
+      // Checking if question is available in question collection
+      const Question = await QuestionModel.findById(qBLK.question_id);
+      if (!Question) throw new NOTFOUND("Question in Question Collection");
+
+      // Pulling question from test
+      Test.questions.pull({ _id: qBLK.question_id });
+      await Test.save();
+
+      const ret = await QuestionModel.findByIdAndDelete(qBLK.question_id);
+
+      return res
+        .status(200)
+        .json({ msg: "Question successfully remove from test", data: ret });
+    } catch (err) {
+      return HandleError(err, res);
+    }
+  }
+);
 module.exports = router;
