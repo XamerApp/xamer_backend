@@ -6,6 +6,7 @@ const {
   _check_for_remove_test,
   _check_for_add_question,
   _check_for_remove_question,
+  _check_for_update_question,
 } = require("../../middlewares/validation");
 const { _allowFaculty } = require("../../middlewares/privilages");
 const { check_for_access_token } = require("../../middlewares/auth");
@@ -199,6 +200,78 @@ router.delete(
       return res
         .status(200)
         .json({ msg: "Question successfully remove from test", data: ret });
+    } catch (err) {
+      return HandleError(err, res);
+    }
+  }
+);
+
+/////////////////////////////////////////////////////
+// METHOD :: PUT
+// DESCRIPTION :: Update Question
+// ACCESS :: Faculty
+// EXPECTED PAYLOAD TYPE :: body/json
+/////////////////////////////////////////////////////
+router.put(
+  "/question",
+  check_for_access_token,
+  _allowFaculty,
+  _check_for_update_question,
+  async (req, res) => {
+    try {
+      const qBLK = req.body;
+
+      // Checking if requested test available or not
+      const Test = await TestModel.findById(qBLK.test_id).populate([
+        { path: "in_charge", select: ["username"] },
+      ]);
+      if (!Test) throw new NOTFOUND("Test");
+
+      // Checking if faculty is same as the in_charge of test
+      if (Test.in_charge.username !== req.user.username) throw new BAD("User");
+
+      // Checking if question is available in question collection
+      const Question = await QuestionModel.findById(qBLK.question_id);
+      if (!Question) throw new NOTFOUND("Question in Question Collection");
+
+      // Checking if question type is valid or not
+      if (!is_type_valid(qBLK.mcq, qBLK.saq, qBLK.baq))
+        throw new INVALID("Question Type");
+
+      // Checking if question have valid options
+      if (!is_options_valid(qBLK.options))
+        throw new INVALID("Question Options");
+
+      // If Question provides any group then is that group valid
+      if (!is_group_valid(Test.groups, qBLK?.group ?? Test.groups[0].name))
+        throw new INVALID("Selected Group");
+
+      // If Question provides any group then is that section valid
+      if (
+        !is_section_valid(
+          Test.groups,
+          qBLK?.group ?? Test.groups[0].name,
+          qBLK?.section ?? Test.groups[0].sections[0]
+        )
+      )
+        throw new INVALID("Selected Section");
+
+      // Assigning new values into question
+      Question.title = qBLK.title;
+      Question.note = qBLK.note;
+      Question.mcq = qBLK.mcq;
+      Question.saq = qBLK.saq;
+      Question.baq = qBLK.baq;
+      Question.mark = qBLK.mark;
+      Question.options = qBLK?.options ?? Question.options;
+      Question.section = qBLK?.section ?? Question.section;
+      Question.group = qBLK?.group ?? Question.group;
+
+      const ret = await Question.save();
+
+      return res
+        .status(200)
+        .json({ msg: "Question successfully updated", data: ret });
     } catch (err) {
       return HandleError(err, res);
     }

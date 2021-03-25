@@ -7,6 +7,7 @@ const {
   _removeTestProps,
   _addQuestionProps,
   _removeQuestionProps,
+  _updateQuestionProps,
 } = require("../utils/validationProps");
 
 // Database Models
@@ -73,6 +74,14 @@ const _check_for_remove_question = (req, res, next) => {
   }
 };
 
+const _check_for_update_question = (req, res, next) => {
+  if (valid_data(req.body, _updateQuestionProps)) {
+    next();
+  } else {
+    res.status(400).json({ msg: "Invalid Data" });
+  }
+};
+
 // Middleware for checking if user exists or not
 const is_username_exists = async (req, res, next) => {
   const username = req.query?.username ?? req.body?.username;
@@ -109,5 +118,6 @@ module.exports = {
   _check_for_remove_test,
   _check_for_add_question,
   _check_for_remove_question,
+  _check_for_update_question,
   is_username_exists,
 };
