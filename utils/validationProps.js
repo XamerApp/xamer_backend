@@ -55,6 +55,12 @@ const _addBatchProps = [string_prop("name")];
 
 const _addSubjectProps = [string_prop("name"), string_prop("paper_code")];
 
+const _updateSubjectProps = [
+  string_prop("name"),
+  string_prop("paper_code"),
+  string_prop("subject_id"),
+];
+
 const _addTestProps = [
   string_prop("name"),
   string_prop("in_charge"),
@@ -142,6 +148,7 @@ module.exports = {
   _updateDepartmentProps,
   _addBatchProps,
   _addSubjectProps,
+  _updateSubjectProps,
   _addTestProps,
   _loginProps,
   _removeTestProps,

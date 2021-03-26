@@ -9,6 +9,7 @@ const {
   _addQuestionProps,
   _removeQuestionProps,
   _updateQuestionProps,
+  _updateSubjectProps,
 } = require("../utils/validationProps");
 
 // Database Models
@@ -45,6 +46,14 @@ const _check_for_add_batch = (req, res, next) => {
 
 const _check_for_add_subject = (req, res, next) => {
   if (valid_data(req.body, _addSubjectProps)) {
+    next();
+  } else {
+    res.status(400).json({ msg: "Invalid Data" });
+  }
+};
+
+const _check_for_update_subject = (req, res, next) => {
+  if (valid_data(req.body, _updateSubjectProps)) {
     next();
   } else {
     res.status(400).json({ msg: "Invalid Data" });
@@ -124,6 +133,7 @@ module.exports = {
   _check_for_update_department,
   _check_for_add_batch,
   _check_for_add_subject,
+  _check_for_update_subject,
   _check_for_add_test,
   _check_for_remove_test,
   _check_for_add_question,
