@@ -256,6 +256,11 @@ router.put(
       )
         throw new INVALID("Selected Section");
 
+      if (Question.title !== qBLK.title) {
+        const found = await QuestionModel.exists({ title: qBLK.title });
+        if (found) throw new EXISTS("Same Question Title");
+      }
+
       // Assigning new values into question
       Question.title = qBLK.title;
       Question.note = qBLK.note;
