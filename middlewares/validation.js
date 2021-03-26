@@ -1,6 +1,7 @@
 // Props for validation check
 const {
   _addDepartmentProps,
+  _updateDepartmentProps,
   _addBatchProps,
   _addSubjectProps,
   _addTestProps,
@@ -20,6 +21,14 @@ const { valid_data } = require("../utils/validateData");
 
 const _check_for_add_department = (req, res, next) => {
   if (valid_data(req.body, _addDepartmentProps)) {
+    next();
+  } else {
+    res.status(400).json({ msg: "Invalid Data" });
+  }
+};
+
+const _check_for_update_department = (req, res, next) => {
+  if (valid_data(req.body, _updateDepartmentProps)) {
     next();
   } else {
     res.status(400).json({ msg: "Invalid Data" });
@@ -112,6 +121,7 @@ const is_username_exists = async (req, res, next) => {
 
 module.exports = {
   _check_for_add_department,
+  _check_for_update_department,
   _check_for_add_batch,
   _check_for_add_subject,
   _check_for_add_test,

@@ -44,6 +44,13 @@ const _addDepartmentProps = [
   number_prop("semesters"),
 ];
 
+const _updateDepartmentProps = [
+  string_prop("name"),
+  string_prop("short_name"),
+  number_prop("semesters"),
+  string_prop("department_id"),
+];
+
 const _addBatchProps = [string_prop("name")];
 
 const _addSubjectProps = [string_prop("name"), string_prop("paper_code")];
@@ -132,6 +139,7 @@ module.exports = {
   _addProps,
   _addManagerProps,
   _addDepartmentProps,
+  _updateDepartmentProps,
   _addBatchProps,
   _addSubjectProps,
   _addTestProps,
