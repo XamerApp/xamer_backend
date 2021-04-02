@@ -5,6 +5,7 @@ const router = require("express").Router();
 const {
   _check_for_add_test,
   _check_for_remove_test,
+  _check_for_update_test,
 } = require("../../middlewares/validation");
 const {
   _allowFaculty,
@@ -17,9 +18,11 @@ const BatchModel = require("../../models/education_models/batch");
 const DepartmentModel = require("../../models/education_models/department");
 const SubjectModel = require("../../models/education_models/subject");
 const TestModel = require("../../models/main_models/test");
+const AnswerModel = require("../../models/main_models/answer");
 const FacultyModel = require("../../models/user_models/faculty");
 const StudentModel = require("../../models/user_models/student");
-const { HandleError, NOTFOUND } = require("../../utils/error");
+const { HandleError, NOTFOUND, BAD } = require("../../utils/error");
+const { create_answer_sheet } = require("../../exam_ops/exam_ops");
 
 /////////////////////////////////////////////////////
 // METHOD :: POST
@@ -180,7 +183,7 @@ router.delete(
 // METHOD :: GET
 // DESCRIPTION :: GET tests from database
 // ACCESS :: Faculties & Students
-// EXPECTED PAYLOAD TYPE :: query/String
+// EXPECTED PAYLOAD TYPE :: none
 /////////////////////////////////////////////////////
 router.get(
   "/test",
@@ -232,4 +235,84 @@ router.get(
     }
   }
 );
+
+/////////////////////////////////////////////////////
+// METHOD :: PUT
+// DESCRIPTION :: Update Changes to the test
+// ACCESS :: Faculty
+// EXPECTED PAYLOAD TYPE :: body/json
+/////////////////////////////////////////////////////
+router.put(
+  "/test",
+  check_for_access_token,
+  _check_for_update_test,
+  _allowFaculty,
+  async (req, res) => {
+    try {
+      const reqBlk = req.body;
+      // Checking if test exists or not
+      const test = await TestModel.findById(reqBlk.test_id);
+      if (!test) throw new NOTFOUND("Test");
+
+      // Checking if incharge is same or not
+      if (reqBlk.in_charge != test.in_charge) throw new BAD("Faculty");
+
+      // Getting in_charge data
+      const in_charge = await FacultyModel.findById(test.in_charge).select(
+        "-password"
+      );
+
+      // TODO
+      // NEED TO IMPLEMENT TIME VALIDATION
+      // NEED to check subjects are under in_charge
+
+      const isDepartmentChanged =
+        reqBlk.department != test.department ? true : false;
+      const isBatchChanged = reqBlk.batch != test.batch ? true : false;
+
+      // Checking if department is going to be changed then
+      // is that department under this in_charge or not??
+      if (isDepartmentChanged) {
+        const department = await DepartmentModel.findById(reqBlk.department);
+        if (!department) throw new NOTFOUND("Requested Department");
+
+        const ret = in_charge.departments.find((item) => {
+          return item == department.id;
+        });
+
+        if (!ret) throw new NOTFOUND("Department in faculty");
+      }
+
+      if (isDepartmentChanged || isBatchChanged) {
+        // Delete whole answer setups if available
+        await AnswerModel.deleteMany({ test_id: reqBlk.test_id });
+
+        // Recreating answer schemas
+        await create_answer_sheet(reqBlk.test_id);
+      }
+
+      test.name = reqBlk.name;
+      test.department = reqBlk.department;
+      test.batch = reqBlk.batch;
+      test.subject = reqBlk.subject;
+      test.semester = reqBlk.semester;
+      test.start_time = reqBlk.start_time;
+      test.start_time_offset = reqBlk.start_time_offset;
+      test.end_time_restrict = reqBlk.end_time_restrict;
+      test.full_time = reqBlk.full_time;
+      test.suffle = reqBlk.suffle;
+      test.negative_marking = reqBlk.negative_marking;
+      test.negative_value = reqBlk.negative_value;
+      test.negative_threshold = reqBlk.negative_threshold;
+
+      const ret = await test.save();
+      return res
+        .status(200)
+        .json({ msg: "Test successfully updated.", data: ret });
+    } catch (err) {
+      return HandleError(err, res);
+    }
+  }
+);
+
 module.exports = router;

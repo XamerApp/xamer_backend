@@ -10,6 +10,7 @@ const {
   _removeQuestionProps,
   _updateQuestionProps,
   _updateSubjectProps,
+  _updateTestProps,
 } = require("../utils/validationProps");
 
 // Database Models
@@ -19,6 +20,7 @@ const FacultyModel = require("../models/user_models/faculty");
 const StudentModel = require("../models/user_models/student");
 
 const { valid_data } = require("../utils/validateData");
+const e = require("express");
 
 const _check_for_add_department = (req, res, next) => {
   if (valid_data(req.body, _addDepartmentProps)) {
@@ -62,6 +64,14 @@ const _check_for_update_subject = (req, res, next) => {
 
 const _check_for_add_test = (req, res, next) => {
   if (valid_data(req.body, _addTestProps)) {
+    next();
+  } else {
+    res.status(400).json({ msg: "Invalid Data" });
+  }
+};
+
+const _check_for_update_test = (req, res, next) => {
+  if (valid_data(req.body, _updateTestProps)) {
     next();
   } else {
     res.status(400).json({ msg: "Invalid Data" });
@@ -135,6 +145,7 @@ module.exports = {
   _check_for_add_subject,
   _check_for_update_subject,
   _check_for_add_test,
+  _check_for_update_test,
   _check_for_remove_test,
   _check_for_add_question,
   _check_for_remove_question,

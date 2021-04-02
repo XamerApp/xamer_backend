@@ -82,6 +82,24 @@ const _addTestProps = [
   // object_prop("answers")
 ];
 
+const _updateTestProps = [
+  string_prop("test_id"),
+  string_prop("name"),
+  string_prop("in_charge"),
+  string_prop("department"),
+  string_prop("batch"),
+  string_prop("subject"),
+  number_prop("semester"),
+  string_prop("start_time"),
+  number_prop("start_time_offset"),
+  number_prop("end_time_restrict"),
+  number_prop("full_time"),
+  boolean_prop("suffle"),
+  boolean_prop("negative_marking"),
+  number_prop("negative_value"),
+  number_prop("negative_threshold"),
+];
+
 const _removeTestProps = [string_prop("id"), string_prop("in_charge")];
 
 const _addQuestionProps = [
@@ -150,6 +168,7 @@ module.exports = {
   _addSubjectProps,
   _updateSubjectProps,
   _addTestProps,
+  _updateTestProps,
   _loginProps,
   _removeTestProps,
   _addQuestionProps,
