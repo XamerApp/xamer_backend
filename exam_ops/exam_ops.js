@@ -51,7 +51,37 @@ const create_answer_sheet = async (test_id) => {
   }
 };
 
+const create_solo_answer_sheet = async (test, student) => {
+  try {
+    const answer_sheet = await AnswerModel.findOne({
+      test_id: test.id,
+      student: student.id,
+    });
+    if (answer_sheet) return true;
+
+    const questions = test.suffle ? shuffle(test.questions) : test.questions;
+    let answer_items = [];
+    for (let j = 0; j < questions.length; j++) {
+      answer_items.push({
+        question: questions[j],
+      });
+    }
+
+    const answer = new AnswerModel({
+      test_id: test,
+      student: student,
+      answers: answer_items,
+    });
+
+    const ret = await answer.save();
+    return ret ? true : false;
+  } catch (err) {
+    return null;
+  }
+};
+
 module.exports = {
   create_answer_sheet,
   remove_answer_sheet,
+  create_solo_answer_sheet,
 };

@@ -130,6 +130,8 @@ const _updateQuestionProps = [
   string_prop("question_id"),
 ];
 
+const _getExam = [string_prop("student_id"), string_prop("test_id")];
+
 const _checkOptionsProps = [string_prop("name"), boolean_prop("is_correct")];
 
 const _middleware_addManager = (req, res, next) => {
@@ -175,6 +177,7 @@ module.exports = {
   _updateQuestionProps,
   _removeQuestionProps,
   _checkOptionsProps,
+  _getExam,
   _middleware_addManager,
   _middleware_addStudent,
   _middleware_addFaculty,
