@@ -268,7 +268,7 @@ router.put(
 
       const isDepartmentChanged =
         reqBlk.department != test.department ? true : false;
-      const isBatchChanged = reqBlk.batch != test.batch ? true : false;
+      // const isBatchChanged = reqBlk.batch != test.batch ? true : false;
 
       // Checking if department is going to be changed then
       // is that department under this in_charge or not??
@@ -283,13 +283,13 @@ router.put(
         if (!ret) throw new NOTFOUND("Department in faculty");
       }
 
-      if (isDepartmentChanged || isBatchChanged) {
-        // Delete whole answer setups if available
-        await AnswerModel.deleteMany({ test_id: reqBlk.test_id });
+      // if (isDepartmentChanged || isBatchChanged) {
+      //   // Delete whole answer setups if available
+      //   await AnswerModel.deleteMany({ test_id: reqBlk.test_id });
 
-        // Recreating answer schemas
-        await create_answer_sheet(reqBlk.test_id);
-      }
+      //   // Recreating answer schemas
+      //   await create_answer_sheet(reqBlk.test_id);
+      // }
 
       test.name = reqBlk.name;
       test.department = reqBlk.department;
