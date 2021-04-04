@@ -130,7 +130,7 @@ const _updateQuestionProps = [
   string_prop("question_id"),
 ];
 
-const _getExam = [string_prop("student_id"), string_prop("test_id")];
+const _getExam = [string_prop("test_id")];
 
 const _checkOptionsProps = [string_prop("name"), boolean_prop("is_correct")];
 

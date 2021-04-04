@@ -31,7 +31,9 @@ router.post(
       const test = await TestModel.findById(test_id);
       if (!test) throw new NOTFOUND("Requested Test");
 
-      const student = await StudentModel.findById(student_id);
+      const student = await StudentModel.findOne({
+        username: req.user.username,
+      });
       if (!student) throw new NOTFOUND("Requested User");
 
       // Validations
