@@ -7,6 +7,7 @@ const { _allowStudent } = require("../../middlewares/privilages");
 const {
   _check_for_get_exam,
   _check_for_save_exam,
+  _check_for_terminate_exam,
 } = require("../../middlewares/validation");
 
 // Models
@@ -129,6 +130,43 @@ router.post(
       await answersheet.save();
       return res.status(200).json({
         msg: "Successfully Saved",
+      });
+    } catch (err) {
+      return HandleError(err, res);
+    }
+  }
+);
+
+/////////////////////////////////////////////////////
+// METHOD :: POST
+// DESCRIPTION :: Terminate Exam
+// ACCESS :: Student
+// EXPECTED PAYLOAD TYPE :: body/json
+/////////////////////////////////////////////////////
+router.post(
+  "/exam/terminate",
+  check_for_access_token,
+  _check_for_terminate_exam,
+  _allowStudent,
+  async (req, res) => {
+    try {
+      // TODO Check EXAM TIME
+
+      const { test_id } = req.body;
+      const student = await StudentModel.findOne({
+        username: req.user.username,
+      });
+      if (!student) throw new NOTFOUND("Student");
+
+      await AnswerModel.updateOne(
+        {
+          test_id: test_id,
+          student: student.id,
+        },
+        { terminated: true }
+      );
+      return res.status(200).json({
+        msg: "Successfully Terminated",
       });
     } catch (err) {
       return HandleError(err, res);
