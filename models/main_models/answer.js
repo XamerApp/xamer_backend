@@ -19,6 +19,7 @@ const answer = Schema({
   test_id: { type: SchemaTypes.ObjectId, ref: TEST_COLLECTION },
   student: { type: SchemaTypes.ObjectId, ref: STUDENT_COLLECTION },
   answers: [answer_block_schema],
+  terminated: { type: SchemaTypes.Boolean, default: false },
 });
 
 module.exports = model(ANSWER_COLLECTION, answer);

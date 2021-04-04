@@ -12,6 +12,7 @@ const {
   _updateSubjectProps,
   _updateTestProps,
   _getExam,
+  _saveExam,
 } = require("../utils/validationProps");
 
 // Database Models
@@ -120,6 +121,14 @@ const _check_for_get_exam = (req, res, next) => {
   }
 };
 
+const _check_for_save_exam = (req, res, next) => {
+  if (valid_data(req.body, _saveExam)) {
+    next();
+  } else {
+    res.status(400).json({ msg: "Invalid Data" });
+  }
+};
+
 // Middleware for checking if user exists or not
 const is_username_exists = async (req, res, next) => {
   const username = req.query?.username ?? req.body?.username;
@@ -161,5 +170,6 @@ module.exports = {
   _check_for_remove_question,
   _check_for_update_question,
   _check_for_get_exam,
+  _check_for_save_exam,
   is_username_exists,
 };
