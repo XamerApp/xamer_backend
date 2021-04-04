@@ -47,7 +47,8 @@ router.post(
 
       const ret = await create_solo_answer_sheet(test, student);
 
-      if (!ret) throw new INVALID("Request");
+      if (!ret.operation) throw new INVALID("Request");
+      if (ret.terminated) throw Error("Exam already terminated");
 
       const answersheet = await AnswerModel.findOne({
         test_id: test.id,
@@ -108,6 +109,7 @@ router.post(
         student: student.id,
       });
       if (!answersheet) throw new NOTFOUND("Requested Answer Sheet");
+      if (answersheet.terminated) throw Error("Exam already terminated");
 
       let ans_found = false;
 

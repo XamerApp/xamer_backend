@@ -57,7 +57,12 @@ const create_solo_answer_sheet = async (test, student) => {
       test_id: test.id,
       student: student.id,
     });
-    if (answer_sheet) return true;
+    if (answer_sheet)
+      return {
+        exists: true,
+        terminated: answer_sheet.terminated,
+        operation: true,
+      };
 
     const questions = test.suffle ? shuffle(test.questions) : test.questions;
     let answer_items = [];
@@ -74,7 +79,7 @@ const create_solo_answer_sheet = async (test, student) => {
     });
 
     const ret = await answer.save();
-    return ret ? true : false;
+    return { exists: false, terminated: false, operation: ret ? true : false };
   } catch (err) {
     return null;
   }
