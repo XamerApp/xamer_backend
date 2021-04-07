@@ -62,6 +62,7 @@ const create_solo_answer_sheet = async (test, student) => {
         exists: true,
         terminated: answer_sheet.terminated,
         operation: true,
+        start_time: answer_sheet.start_time,
       };
 
     const questions = test.suffle ? shuffle(test.questions) : test.questions;
@@ -85,8 +86,26 @@ const create_solo_answer_sheet = async (test, student) => {
   }
 };
 
+const terminate_exam = async (test, student) => {
+  try {
+    const ret = await AnswerModel.findOneAndUpdate(
+      {
+        test_id: test.id,
+        student: student.id,
+      },
+      {
+        terminated: true,
+      }
+    );
+    return ret ? true : false;
+  } catch (err) {
+    return false;
+  }
+};
+
 module.exports = {
   create_answer_sheet,
   remove_answer_sheet,
   create_solo_answer_sheet,
+  terminate_exam,
 };
