@@ -52,6 +52,13 @@ const is_eligible_to_create_test = (start_time, offset) => {
   return current.getTime() < restrict ? true : false;
 };
 
+const is_eligible_to_start_exam = (start_time, full_time, offset) => {
+  const start = start_time.getTime() - offset * 3600000;
+  const end = start_time.getTime() + full_time * 60000;
+  const current = new Date().getTime();
+  return current > start && current < end ? true : false;
+};
+
 module.exports = {
   is_eligible_by_hour,
   is_eligible_by_min,
@@ -59,4 +66,5 @@ module.exports = {
   time_left_in_min,
   time_left_in_second,
   is_eligible_to_create_test,
+  is_eligible_to_start_exam,
 };
