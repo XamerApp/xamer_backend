@@ -23,6 +23,7 @@ const FacultyModel = require("../../models/user_models/faculty");
 const StudentModel = require("../../models/user_models/student");
 const { HandleError, NOTFOUND, BAD } = require("../../utils/error");
 const { create_answer_sheet } = require("../../exam_ops/exam_ops");
+const { is_eligible_to_create_test } = require("../../utils/date_ops");
 
 /////////////////////////////////////////////////////
 // METHOD :: POST
@@ -115,6 +116,11 @@ router.post(
       } else {
         groups = req.body.groups;
       }
+
+      // Checking the timing is correct or not
+      const start_time = new Date(req.body.start_time);
+      if (!is_eligible_to_create_test(start_time, req.body.start_time_offset))
+        throw new BAD("Time");
 
       // Creating a instance of Test
       const Test = new TestModel({
