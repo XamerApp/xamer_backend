@@ -15,6 +15,7 @@ const AnswerModel = require("../../models/main_models/answer");
 const TestModel = require("../../models/main_models/test");
 const StudentModel = require("../../models/user_models/student");
 const { create_solo_answer_sheet } = require("../../exam_ops/exam_ops");
+const { is_eligible_to_start_exam } = require("../../utils/date_ops");
 
 /////////////////////////////////////////////////////
 // METHOD :: POST
@@ -29,8 +30,6 @@ router.post(
   _allowStudent,
   async (req, res) => {
     try {
-      // TODO Check EXAM TIME
-
       const { test_id, student_id } = req.body;
       const test = await TestModel.findById(test_id);
       if (!test) throw new NOTFOUND("Requested Test");
@@ -45,6 +44,17 @@ router.post(
         throw new NOTFOUND("Request Department in test");
       if (String(test.batch) !== String(student.batch))
         throw new NOTFOUND("Request Batch in test");
+
+      // Time Valid
+      const examtime = new Date(test.start_time);
+      if (
+        !is_eligible_to_start_exam(
+          examtime,
+          test.full_time,
+          test.start_time_offset
+        )
+      )
+        throw new BAD("Time");
 
       const ret = await create_solo_answer_sheet(test, student);
 
