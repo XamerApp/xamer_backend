@@ -56,6 +56,9 @@ const is_eligible_to_start_exam = (start_time, full_time, offset) => {
   const start = start_time.getTime() - offset * 3600000;
   const end = start_time.getTime() + full_time * 60000;
   const current = new Date().getTime();
+  // console.log(new Date(start).toLocaleString());
+  // console.log(new Date(end).toLocaleString());
+  // console.log(new Date(current).toLocaleString());
   return current > start && current < end ? true : false;
 };
 
