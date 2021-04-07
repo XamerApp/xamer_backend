@@ -59,7 +59,7 @@ router.post(
       if (!faculty) throw Error("Faculty doesn't exists");
 
       // Checking if Faculty have permission to make a test in curtain departments
-      const departments = Array(faculty.departments);
+      const departments = faculty.departments;
       const dept_perm = departments.find((item) => {
         return item == department.id;
       });
