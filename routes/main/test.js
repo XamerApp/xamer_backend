@@ -55,7 +55,9 @@ router.post(
       }
 
       // Checking if faculty is exists or not
-      const faculty = await FacultyModel.findById(req.body.in_charge);
+      const faculty = await FacultyModel.findById(req.body.in_charge).select(
+        "-password"
+      );
       if (!faculty) throw Error("Faculty doesn't exists");
 
       // Checking if Faculty have permission to make a test in curtain departments
