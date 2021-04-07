@@ -177,8 +177,13 @@ router.delete(
         throw Error("Faculty doesn't have permission to remove this test");
       }
 
-      // Saving Test into the database
+      // Removing Test from the database
       const ret = await TestModel.findByIdAndDelete(req.query.id);
+
+      // Removing Answer Sheets
+      await AnswerModel.deleteMany({
+        test_id: ret.id,
+      });
 
       res.status(200).json({ msg: "Test removed successfully", data: ret });
     } catch (err) {
