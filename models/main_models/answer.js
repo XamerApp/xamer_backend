@@ -20,6 +20,7 @@ const answer = Schema({
   student: { type: SchemaTypes.ObjectId, ref: STUDENT_COLLECTION },
   answers: [answer_block_schema],
   terminated: { type: SchemaTypes.Boolean, default: false },
+  start_time: { type: SchemaTypes.Date, default: new Date() },
 });
 
 module.exports = model(ANSWER_COLLECTION, answer);
