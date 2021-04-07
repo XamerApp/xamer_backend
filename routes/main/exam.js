@@ -14,8 +14,14 @@ const {
 const AnswerModel = require("../../models/main_models/answer");
 const TestModel = require("../../models/main_models/test");
 const StudentModel = require("../../models/user_models/student");
-const { create_solo_answer_sheet } = require("../../exam_ops/exam_ops");
-const { is_eligible_to_start_exam } = require("../../utils/date_ops");
+const {
+  create_solo_answer_sheet,
+  terminate_exam,
+} = require("../../exam_ops/exam_ops");
+const {
+  is_eligible_to_start_exam,
+  is_eligible_to_continue_exam,
+} = require("../../utils/date_ops");
 
 /////////////////////////////////////////////////////
 // METHOD :: POST
@@ -60,6 +66,15 @@ router.post(
 
       if (!ret.operation) throw new INVALID("Request");
       if (ret.terminated) throw Error("Exam already terminated");
+
+      // Checking if student can continue exam if answer sheet already exists
+      if (
+        ret.exists &&
+        !is_eligible_to_continue_exam(ret.start_time, test.full_time)
+      ) {
+        await terminate_exam(test, student);
+        throw new BAD("Time");
+      }
 
       const answersheet = await AnswerModel.findOne({
         test_id: test.id,
