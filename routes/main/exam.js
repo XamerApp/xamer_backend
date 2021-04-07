@@ -111,8 +111,6 @@ router.post(
   _allowStudent,
   async (req, res) => {
     try {
-      // TODO Check EXAM TIME
-
       const {
         test_id,
         answer_id,
@@ -136,6 +134,16 @@ router.post(
       });
       if (!answersheet) throw new NOTFOUND("Requested Answer Sheet");
       if (answersheet.terminated) throw Error("Exam already terminated");
+
+      if (
+        !is_eligible_to_continue_exam(
+          new Date(answersheet.start_time),
+          test.full_time
+        )
+      ) {
+        await terminate_exam(test, student);
+        throw new BAD("Time");
+      }
 
       let ans_found = false;
 
