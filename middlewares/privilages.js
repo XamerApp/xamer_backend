@@ -1,3 +1,10 @@
+const _allowGOD = (req, res, next) => {
+  if (req.body.GODKEY != process.env.GODKEY) {
+    return res.status(400).json({ msg: "Bad User" });
+  }
+  next();
+};
+
 const _allowAdmin = (req, res, next) => {
   if (!req?.user?.role || req.user.role !== "admin")
     return res.status(400).json({ msg: "Bad User" });
@@ -46,4 +53,5 @@ module.exports = {
   _allowFaculty,
   _allowStudent,
   _allowFacultyStudent,
+  _allowGOD,
 };
