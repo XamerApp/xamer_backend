@@ -6,6 +6,15 @@ const {
   number_prop,
 } = require("./validateData");
 
+const _initXamerProps = [
+  string_prop("name"),
+  string_prop("description"),
+  string_prop("logo"),
+  string_prop("mail_id"),
+  boolean_prop("mail_notify"),
+  string_prop("GODKEY"),
+];
+
 const _loginProps = [string_prop("username"), string_prop("password")];
 
 const _addProps = [
@@ -146,6 +155,14 @@ const _saveExam = [
 
 const _checkOptionsProps = [string_prop("name"), boolean_prop("is_correct")];
 
+const _middleware_initXamer = (req, res, next) => {
+  if (valid_data(req.body, _initXamerProps)) {
+    next();
+  } else {
+    res.status(400).json({ msg: "Invalid Data" });
+  }
+};
+
 const _middleware_addAdmin = (req, res, next) => {
   if (valid_data(req.body, _addAdminProps)) {
     next();
@@ -199,6 +216,7 @@ module.exports = {
   _checkOptionsProps,
   _getExam,
   _saveExam,
+  _middleware_initXamer,
   _middleware_addAdmin,
   _middleware_addManager,
   _middleware_addStudent,
