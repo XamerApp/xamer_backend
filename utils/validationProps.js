@@ -15,6 +15,15 @@ const _initXamerProps = [
   string_prop("GODKEY"),
 ];
 
+// Notification
+const _addNotificationProps = [
+  string_prop("name"),
+  string_prop("description"),
+  string_prop("department"),
+  string_prop("batch"),
+  boolean_prop("all"),
+];
+
 const _loginProps = [string_prop("username"), string_prop("password")];
 
 const _addProps = [
@@ -163,6 +172,15 @@ const _middleware_initXamer = (req, res, next) => {
   }
 };
 
+// Notifications
+const _middleware_addNotification = (req, res, next) => {
+  if (valid_data(req.body, _addNotificationProps)) {
+    next();
+  } else {
+    res.status(400).json({ msg: "Invalid Data" });
+  }
+};
+
 const _middleware_addAdmin = (req, res, next) => {
   if (valid_data(req.body, _addAdminProps)) {
     next();
@@ -217,6 +235,7 @@ module.exports = {
   _getExam,
   _saveExam,
   _middleware_initXamer,
+  _middleware_addNotification,
   _middleware_addAdmin,
   _middleware_addManager,
   _middleware_addStudent,

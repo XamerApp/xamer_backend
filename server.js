@@ -10,6 +10,7 @@ const main_routes = require("./routes/main");
 const system_routes = require("./routes/system");
 const register_routes = require("./routes/register");
 const god_routes = require("./routes/god");
+const notification_routes = require("./routes/notify");
 
 // Initializing Express
 const app = express();
@@ -23,6 +24,7 @@ app.use("/register", register_routes);
 app.use("/", system_routes);
 app.use("/", main_routes);
 app.use("/", god_routes);
+app.use("/", notification_routes);
 
 // Connecting to the database
 mongoose
