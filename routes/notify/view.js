@@ -60,7 +60,6 @@ router.get("/", check_for_access_token, _allowAllUser, async (req, res) => {
     if (!user) throw new BAD("Faculty");
 
     let constrains = [];
-    console.log(user.departments);
     user.departments.forEach((item) => {
       constrains.push({ department: item });
     });
@@ -68,6 +67,9 @@ router.get("/", check_for_access_token, _allowAllUser, async (req, res) => {
 
     const notifications = await NotificationModel.find({
       $or: constrains,
+    }).populate({
+      path: "seen",
+      select: ["name", "username"],
     });
 
     return res.status(200).json({

@@ -21,7 +21,6 @@ const notification = Schema({
   },
   all: { type: SchemaTypes.Boolean, default: true },
   seen: [{ type: SchemaTypes.ObjectId, ref: STUDENT_COLLECTION }],
-  marked_seen: [{ type: SchemaTypes.ObjectId, ref: STUDENT_COLLECTION }],
   timestamp: { type: SchemaTypes.Date, default: new Date() },
 });
 
