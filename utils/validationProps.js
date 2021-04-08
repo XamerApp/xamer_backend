@@ -25,6 +25,8 @@ const _addManagerProps = [
   string_prop("password"),
 ];
 
+const _addAdminProps = _addManagerProps;
+
 const _addStudentProps = [
   string_prop("name"),
   string_prop("username"),
@@ -144,6 +146,14 @@ const _saveExam = [
 
 const _checkOptionsProps = [string_prop("name"), boolean_prop("is_correct")];
 
+const _middleware_addAdmin = (req, res, next) => {
+  if (valid_data(req.body, _addAdminProps)) {
+    next();
+  } else {
+    res.status(400).json({ msg: "Invalid Data" });
+  }
+};
+
 const _middleware_addManager = (req, res, next) => {
   if (valid_data(req.body, _addManagerProps)) {
     next();
@@ -189,6 +199,7 @@ module.exports = {
   _checkOptionsProps,
   _getExam,
   _saveExam,
+  _middleware_addAdmin,
   _middleware_addManager,
   _middleware_addStudent,
   _middleware_addFaculty,

@@ -6,6 +6,7 @@ const {
   _middleware_addManager,
   _middleware_addStudent,
   _middleware_addFaculty,
+  _middleware_addAdmin,
 } = require("../utils/validationProps");
 const { is_username_exists } = require("../middlewares/validation");
 const {
@@ -22,6 +23,39 @@ const StudentModel = require("../models/user_models/student");
 const DepartmentModel = require("../models/education_models/department");
 const BatchModel = require("../models/education_models/batch");
 const SubjectModel = require("../models/education_models/subject");
+
+/////////////////////////////////////////////////////
+// METHOD :: POST
+// DESCRIPTION :: Register/Create Manager
+// ACCESS :: Only Admins [TOKEN]
+// EXPECTED PAYLOAD TYPE :: body/json
+/////////////////////////////////////////////////////
+router.post(
+  "/admin",
+  check_for_access_token,
+  _allowAdmin,
+  _middleware_addAdmin,
+  is_username_exists,
+  async (req, res) => {
+    try {
+      const username = req.body.username;
+      const Admin = new AdminModel({
+        name: req.body.name.trim(),
+        username: username.toLowerCase().trim(),
+        password: await crypto.hash(req.body.password.trim(), 10),
+      });
+      ret = await Admin.save();
+
+      // Excluding Password while sending back to the client
+      const retObj = ret.toObject();
+      delete retObj.password;
+
+      res.status(200).json({ msg: "Success", data: retObj });
+    } catch (err) {
+      res.status(500).json({ msg: err?.message ?? err });
+    }
+  }
+);
 
 /////////////////////////////////////////////////////
 // METHOD :: POST
