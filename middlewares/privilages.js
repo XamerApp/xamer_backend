@@ -23,6 +23,21 @@ const _allowAdminManager = (req, res, next) => {
   return res.status(400).json({ msg: "Bad User" });
 };
 
+const _allowAdminManagerFaculty = (req, res, next) => {
+  if (!req?.user?.role) return res.status(400).json({ msg: "Bad User" });
+
+  if (
+    req.user.role === "admin" ||
+    req.user.role === "manager" ||
+    req.user.role === "faculty"
+  ) {
+    next();
+    return;
+  }
+
+  return res.status(400).json({ msg: "Bad User" });
+};
+
 const _allowFaculty = (req, res, next) => {
   if (!req?.user?.role || req.user.role !== "faculty")
     return res.status(400).json({ msg: "Bad User" });
@@ -50,6 +65,7 @@ const _allowFacultyStudent = (req, res, next) => {
 module.exports = {
   _allowAdmin,
   _allowAdminManager,
+  _allowAdminManagerFaculty,
   _allowFaculty,
   _allowStudent,
   _allowFacultyStudent,
