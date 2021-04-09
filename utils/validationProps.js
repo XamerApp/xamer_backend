@@ -26,6 +26,15 @@ const _addNotificationProps = [
 
 const _removeNotificationProps = [string_prop("id")];
 
+const _updateNotificationProps = [
+  string_prop("id"),
+  string_prop("name"),
+  string_prop("description"),
+  string_prop("department"),
+  string_prop("batch"),
+  boolean_prop("all"),
+];
+
 const _seenNotificationProps = [string_prop("id")];
 
 const _loginProps = [string_prop("username"), string_prop("password")];
@@ -193,6 +202,14 @@ const _middleware_removeNotification = (req, res, next) => {
   }
 };
 
+const _middleware_updateNotification = (req, res, next) => {
+  if (valid_data(req.body, _updateNotificationProps)) {
+    next();
+  } else {
+    res.status(400).json({ msg: "Invalid Data" });
+  }
+};
+
 const _middleware_seenNotification = (req, res, next) => {
   if (valid_data(req.body, _seenNotificationProps)) {
     next();
@@ -257,6 +274,7 @@ module.exports = {
   _middleware_initXamer,
   _middleware_addNotification,
   _middleware_removeNotification,
+  _middleware_updateNotification,
   _middleware_seenNotification,
   _middleware_addAdmin,
   _middleware_addManager,
