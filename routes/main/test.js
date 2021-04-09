@@ -126,6 +126,7 @@ router.post(
       const Test = new TestModel({
         name: req.body.name,
         in_charge: faculty,
+        published: req.body.published,
         department: department,
         batch: batch,
         subject: subject,
@@ -215,6 +216,7 @@ router.get(
         searchConstrains = {
           department: User.department._id,
           batch: User.batch._id,
+          published: true,
         };
         populateConstrains = [
           { path: "in_charge", select: ["-password"] },
@@ -305,6 +307,7 @@ router.put(
       // }
 
       test.name = reqBlk.name;
+      test.published = reqBlk.published;
       test.department = reqBlk.department;
       test.batch = reqBlk.batch;
       test.subject = reqBlk.subject;

@@ -36,9 +36,11 @@ router.post(
   _allowStudent,
   async (req, res) => {
     try {
-      const { test_id, student_id } = req.body;
+      const { test_id } = req.body;
       const test = await TestModel.findById(test_id);
       if (!test) throw new NOTFOUND("Requested Test");
+
+      if (!test.published) throw Error("Test is not published yet");
 
       const student = await StudentModel.findOne({
         username: req.user.username,

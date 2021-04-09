@@ -17,6 +17,7 @@ const groupSchema = Schema({
 const test = Schema({
   name: SchemaTypes.String,
   in_charge: { type: SchemaTypes.ObjectId, ref: FACULTY_COLLECTION },
+  published: { type: SchemaTypes.Boolean, default: false },
 
   // Test Indentification props
   department: { type: SchemaTypes.ObjectId, ref: DEPARTMENT_COLLECTION },

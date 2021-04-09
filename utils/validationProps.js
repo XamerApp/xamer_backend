@@ -97,6 +97,7 @@ const _updateSubjectProps = [
 const _addTestProps = [
   string_prop("name"),
   string_prop("in_charge"),
+  boolean_prop("published"),
   string_prop("department"),
   string_prop("batch"),
   string_prop("subject"),
@@ -119,6 +120,7 @@ const _updateTestProps = [
   string_prop("test_id"),
   string_prop("name"),
   string_prop("in_charge"),
+  boolean_prop("published"),
   string_prop("department"),
   string_prop("batch"),
   string_prop("subject"),
