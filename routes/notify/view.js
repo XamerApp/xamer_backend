@@ -40,19 +40,46 @@ router.get("/", check_for_access_token, _allowAllUser, async (req, res) => {
       });
       if (!user) throw new BAD("Student");
 
-      const notifications = await NotificationModel.find({
-        $or: [
+      const seen_notifications = await NotificationModel.find({
+        $and: [
           {
-            department: user.department,
-            batch: user.batch,
+            $or: [
+              {
+                department: user.department,
+                batch: user.batch,
+              },
+              { all: true },
+            ],
           },
-          { all: true },
+          {
+            seen: { $in: [user.id] },
+          },
         ],
-      }).select(["-seen", "-marked_seen"]);
+      }).select(["-seen"]);
+
+      const unseen_notifications = await NotificationModel.find({
+        $and: [
+          {
+            $or: [
+              {
+                department: user.department,
+                batch: user.batch,
+              },
+              { all: true },
+            ],
+          },
+          {
+            seen: { $nin: [user.id] },
+          },
+        ],
+      }).select(["-seen"]);
 
       return res.status(200).json({
         msg: "Notification Fetched Successfully",
-        data: notifications,
+        data: {
+          seen: seen_notifications,
+          unseen: unseen_notifications,
+        },
       });
     }
 
