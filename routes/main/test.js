@@ -119,8 +119,7 @@ router.post(
 
       // Checking the timing is correct or not
       const start_time = new Date(req.body.start_time);
-      if (!is_eligible_to_create_test(start_time, req.body.start_time_offset))
-        throw new BAD("Time");
+      if (!is_eligible_to_create_test(start_time)) throw new BAD("Time");
 
       // Creating a instance of Test
       const Test = new TestModel({
