@@ -70,6 +70,15 @@ const is_eligible_to_continue_exam = (start_time, full_time) => {
   return current > start && current < end ? true : false;
 };
 
+const is_eligible_to_get_result = (start_time, full_time) => {
+  const end = start_time.getTime() + full_time * 60000;
+  const current = new Date().getTime();
+  // console.log(new Date(start).toLocaleString());
+  // console.log(new Date(end).toLocaleString());
+  // console.log(new Date(current).toLocaleString());
+  return current > end ? true : false;
+};
+
 module.exports = {
   is_eligible_by_hour,
   is_eligible_by_min,
@@ -79,4 +88,5 @@ module.exports = {
   is_eligible_to_create_test,
   is_eligible_to_start_exam,
   is_eligible_to_continue_exam,
+  is_eligible_to_get_result,
 };

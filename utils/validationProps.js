@@ -177,6 +177,8 @@ const _saveExam = [
   string_prop("answer_id"),
 ];
 
+const _getResult = [string_prop("test_id")];
+
 const _checkOptionsProps = [string_prop("name"), boolean_prop("is_correct")];
 
 const _middleware_initXamer = (req, res, next) => {
@@ -273,6 +275,7 @@ module.exports = {
   _checkOptionsProps,
   _getExam,
   _saveExam,
+  _getResult,
   _middleware_initXamer,
   _middleware_addNotification,
   _middleware_removeNotification,
