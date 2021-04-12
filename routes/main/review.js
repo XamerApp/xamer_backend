@@ -1,11 +1,12 @@
 // Essential imports
 const router = require("express").Router();
-const { HandleError, NOTFOUND, BAD } = require("../../utils/error");
+const { HandleError, NOTFOUND, BAD, INVALID } = require("../../utils/error");
 
 const { check_for_access_token } = require("../../middlewares/auth");
 const { _allowAdminManagerFaculty } = require("../../middlewares/privilages");
 const {
   _check_for_get_test_review_data,
+  _check_for_save_review_data,
 } = require("../../middlewares/validation");
 
 // Models
@@ -85,6 +86,86 @@ router.get(
       return res.status(200).json({
         msg: "Successfully Fetched Test Data for review",
         data: { test, answer_sheets, not_attended: not_attended_students },
+      });
+    } catch (err) {
+      return HandleError(err, res);
+    }
+  }
+);
+
+/////////////////////////////////////////////////////
+// METHOD :: POST
+// DESCRIPTION :: Give marks and write comments  on
+//                a answer
+// ACCESS :: Admin, Manager, Faculty
+// EXPECTED PAYLOAD TYPE :: json/body
+/////////////////////////////////////////////////////
+router.post(
+  "/test/review",
+  check_for_access_token,
+  _check_for_save_review_data,
+  _allowAdminManagerFaculty,
+  async (req, res) => {
+    try {
+      const {
+        test_id,
+        answer_id,
+        question_id,
+        comment,
+        given_marks,
+      } = req.body;
+
+      let searchConstrains;
+      if (req.user.role === "faculty") {
+        searchConstrains = {
+          _id: test_id,
+          in_charge: req.user.id,
+        };
+      } else {
+        searchConstrains = {
+          _id: test_id,
+        };
+      }
+      const test = await TestModel.findOne(searchConstrains);
+      if (!test) throw new NOTFOUND("Test");
+
+      // Time Valid
+      const examtime = new Date(test.start_time);
+      if (!is_eligible_to_get_result(examtime, test.full_time))
+        throw new BAD("Time");
+
+      // Fetching Answer Sheet
+      const AnswerSheet = await AnswerModel.findOne({
+        _id: answer_id,
+        test_id: test_id,
+      }).populate({
+        path: "answers",
+        populate: {
+          path: "question",
+          model: process.env.QUESTION_COLLECTION,
+        },
+      });
+      if (!AnswerSheet) throw new NOTFOUND("Answer Sheet");
+
+      AnswerSheet.answers.forEach((item) => {
+        if (item.question.id === question_id) {
+          if (
+            item.question.mcq ||
+            given_marks > item.question.mark ||
+            given_marks < 0
+          )
+            throw new INVALID("Request");
+
+          item.comment = comment;
+          item.given_marks = given_marks;
+          item.reviewed = true;
+        }
+      });
+
+      await AnswerSheet.save();
+
+      return res.status(200).json({
+        msg: "Successfully Fetched Test Data for review",
       });
     } catch (err) {
       return HandleError(err, res);

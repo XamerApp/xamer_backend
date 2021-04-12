@@ -15,6 +15,7 @@ const {
   _saveExam,
   _getResult,
   _getTestReviewData,
+  _saveTestReviewData,
 } = require("../utils/validationProps");
 
 // Database Models
@@ -155,6 +156,14 @@ const _check_for_get_test_review_data = (req, res, next) => {
   }
 };
 
+const _check_for_save_review_data = (req, res, next) => {
+  if (valid_data(req.body, _saveTestReviewData)) {
+    next();
+  } else {
+    res.status(400).json({ msg: "Invalid Data" });
+  }
+};
+
 // Middleware for checking if user exists or not
 const is_username_exists = async (req, res, next) => {
   const username = req.query?.username ?? req.body?.username;
@@ -200,5 +209,6 @@ module.exports = {
   _check_for_terminate_exam,
   _check_for_get_result,
   _check_for_get_test_review_data,
+  _check_for_save_review_data,
   is_username_exists,
 };
