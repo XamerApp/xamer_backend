@@ -52,6 +52,7 @@ router.post("/", check_for_credentials, async (req, res) => {
 
     if (ret) {
       const userInfo = {
+        id: User.id,
         name: User.name,
         username: User.username,
         role: User.role,
@@ -67,6 +68,7 @@ router.post("/", check_for_credentials, async (req, res) => {
           expiresIn: parseInt(process.env.TOKEN_VALIDITY),
         }),
         // refresh_token: JWT.sign(userInfo, process.env.REFRESH_TOKEN_SECRET),
+        id: User.id,
         name: User.name,
         username: User.username,
         role: User.role,
