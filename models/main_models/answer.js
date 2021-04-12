@@ -13,6 +13,9 @@ const answer_block_schema = Schema({
   visited: { type: SchemaTypes.Boolean, default: false },
   answered: { type: SchemaTypes.Boolean, default: false },
   marked: { type: SchemaTypes.Boolean, default: false },
+  given_marks: { type: SchemaTypes.Number, default: 0 },
+  reviewed: { type: SchemaTypes.Boolean, default: false },
+  comment: { type: SchemaTypes.String, default: "" },
 });
 
 const answer = Schema({
