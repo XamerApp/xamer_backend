@@ -1,28 +1,16 @@
 // Essential imports
 const router = require("express").Router();
-const { HandleError, NOTFOUND, BAD, INVALID } = require("../../utils/error");
+const { HandleError, NOTFOUND, BAD } = require("../../utils/error");
 
 const { check_for_access_token } = require("../../middlewares/auth");
 const { _allowStudent } = require("../../middlewares/privilages");
-const {
-  _check_for_save_exam,
-  _check_for_terminate_exam,
-  _check_for_get_result,
-} = require("../../middlewares/validation");
+const { _check_for_get_result } = require("../../middlewares/validation");
 
 // Models
 const AnswerModel = require("../../models/main_models/answer");
 const TestModel = require("../../models/main_models/test");
 const StudentModel = require("../../models/user_models/student");
-const {
-  create_solo_answer_sheet,
-  terminate_exam,
-} = require("../../exam_ops/exam_ops");
-const {
-  is_eligible_to_start_exam,
-  is_eligible_to_continue_exam,
-  is_eligible_to_get_result,
-} = require("../../utils/date_ops");
+const { is_eligible_to_get_result } = require("../../utils/date_ops");
 
 /////////////////////////////////////////////////////
 // METHOD :: GET
